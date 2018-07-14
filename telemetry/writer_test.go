@@ -26,10 +26,10 @@ func TestWriter(t *testing.T) {
 	defer func() { exit = os.Exit }()
 
 	buf := &bytes.Buffer{}
-	w := NewWriter(DebugLevel, buf).(*writer)
+	w := NewWriter(DebugLevel, buf)
 
 	for x := DebugLevel; x >= 0; x-- {
-		w.l = x
+		w.SetLevel(x)
 		t := w.WithFields(MetaData{
 			"cat": true,
 		})

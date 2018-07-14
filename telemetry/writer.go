@@ -7,6 +7,9 @@ import (
 	"sync"
 )
 
+// NewWriter creates a telementer that sends events to the given
+// writer. Each field, and all of the meta data fields are written out
+// on a single line with the format 'key="value"'.
 func NewWriter(l Level, w io.Writer) Telemeter {
 	return &writer{
 		lock: &sync.Mutex{},
@@ -41,6 +44,10 @@ func (w *writer) log(l Level, m string) {
 	if err != nil {
 		fmt.Printf("failed to write to log: %v", err)
 	}
+}
+
+func (w *writer) SetLevel(level Level) {
+	w.l = level
 }
 
 func (w *writer) WithFields(md MetaData) Telemeter {

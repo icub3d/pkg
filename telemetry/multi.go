@@ -1,5 +1,10 @@
 package telemetry
 
+// NewMulti creates a telemeter that sends events to all of the given
+// telementers.
+//
+// NOTE: Fatalf will probably not send to all of the telemeters
+// because they are likely to call os.Exit.
 func NewMulti(tt ...Telemeter) Telemeter {
 	return &multi{
 		tt: tt,
@@ -9,6 +14,12 @@ func NewMulti(tt ...Telemeter) Telemeter {
 type multi struct {
 	tt []Telemeter
 	md MetaData
+}
+
+func (m *multi) SetLevel(level Level) {
+	for _, t := range m.tt {
+		t.SetLevel(level)
+	}
 }
 
 func (m *multi) WithFields(md MetaData) Telemeter {

@@ -21,12 +21,14 @@ func TestMulti(t *testing.T) {
 		NewWriter(ErrorLevel, buf),
 		NewWriter(FatalLevel, buf),
 	).WithFields(MetaData{"top": true})
-
 	w.Debugf("%s", "debug")
 	w.Infof("%s", "info")
 	w.Warnf("%s", "warn")
 	w.Errorf("%s", "error")
 	w.Fatalf("%s", "fatal")
+
+	w.SetLevel(DebugLevel)
+	w.Debugf("%s", "debug")
 
 	exp := `level="debug" when="1969-12-31 17:00:00 -0700 MST" what="debug" top="true"
 level="info" when="1969-12-31 17:00:00 -0700 MST" what="info" top="true"
@@ -43,6 +45,11 @@ level="fatal" when="1969-12-31 17:00:00 -0700 MST" what="fatal" top="true"
 level="fatal" when="1969-12-31 17:00:00 -0700 MST" what="fatal" top="true"
 level="fatal" when="1969-12-31 17:00:00 -0700 MST" what="fatal" top="true"
 level="fatal" when="1969-12-31 17:00:00 -0700 MST" what="fatal" top="true"
+level="debug" when="1969-12-31 17:00:00 -0700 MST" what="debug" top="true"
+level="debug" when="1969-12-31 17:00:00 -0700 MST" what="debug" top="true"
+level="debug" when="1969-12-31 17:00:00 -0700 MST" what="debug" top="true"
+level="debug" when="1969-12-31 17:00:00 -0700 MST" what="debug" top="true"
+level="debug" when="1969-12-31 17:00:00 -0700 MST" what="debug" top="true"
 `
 
 	if buf.String() != exp {
