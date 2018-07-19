@@ -1,6 +1,7 @@
 package netutil
 
 import (
+	"io"
 	"testing"
 	"time"
 )
@@ -25,6 +26,11 @@ func TestNewTestConn(t *testing.T) {
 	if string(b) != "hello, world" {
 		t.Errorf("didn't read 'hello, world' from the buffer")
 	}
+	c.ReadErr = io.EOF
+	n, err = c.Read(b)
+	if n != 0 && err != io.EOF {
+		t.Errorf("Read() = %v, %v; expected %v, %v", n, err, 0, io.EOF)
+	}
 
 	n, err = c.Write([]byte("g'day, mate"))
 	if n != 11 || err != nil {
@@ -32,6 +38,11 @@ func TestNewTestConn(t *testing.T) {
 	}
 	if c.W.String() != "g'day, mate" {
 		t.Errorf("didn't read 'g'day mate' from the buffer")
+	}
+	c.WriteErr = io.EOF
+	n, err = c.Write(b)
+	if n != 0 && err != io.EOF {
+		t.Errorf("Write() = %v, %v; expected %v, %v", n, err, 0, io.EOF)
 	}
 
 	if c.LocalAddr() != l {

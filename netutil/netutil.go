@@ -43,6 +43,10 @@ type TestConn struct {
 
 	// These are the deadlines set by function calls.
 	RDeadline, WDeadline time.Time
+
+	// Set these and the next Read/Write will return this
+	// error. Subsequent errors will not return the error.
+	ReadErr, WriteErr error
 }
 
 // NewTestConn creates a new TestConn using the givne local and remote
@@ -59,11 +63,17 @@ func NewTestConn(local, remote net.Addr) *TestConn {
 
 // Read implements the net.Conn interface.
 func (c *TestConn) Read(b []byte) (n int, err error) {
+	if c.ReadErr != nil {
+		return 0, c.ReadErr
+	}
 	return c.R.Read(b)
 }
 
 // Write implements the net.Conn interface.
 func (c *TestConn) Write(b []byte) (n int, err error) {
+	if c.WriteErr != nil {
+		return 0, c.WriteErr
+	}
 	return c.W.Write(b)
 }
 
